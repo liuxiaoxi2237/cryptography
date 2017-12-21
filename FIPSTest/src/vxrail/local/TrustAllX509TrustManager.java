@@ -2,14 +2,7 @@ package vxrail.local;
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.X509Certificate;
 
-/**
- * DO NOT USE IN PRODUCTION!!!!
- * 
- * This class will simply trust everything that comes along.
- * 
- * @author frank
- *
- */
+//TrustManager without certificate verification, used to bypass certificate verification 
 
 public class TrustAllX509TrustManager implements X509TrustManager {
     public X509Certificate[] getAcceptedIssuers() {

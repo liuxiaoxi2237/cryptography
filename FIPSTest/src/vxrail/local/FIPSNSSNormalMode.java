@@ -20,8 +20,7 @@ public class FIPSNSSNormalMode {
 
         String NSS01 = "/home/david/jssetest/nss.cfg";
         Provider p = new sun.security.pkcs11.SunPKCS11(NSS01);
-        KeyPair 
-        
+    
         
         
         //Security.getProvider("SunJSSE");

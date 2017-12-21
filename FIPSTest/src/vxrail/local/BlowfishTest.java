@@ -20,18 +20,16 @@ import javax.crypto.spec.SecretKeySpec;
 
 
 
-public class BFTest {
+public class BlowfishTest {
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
-		// TODO Auto-generated method stub
-
-		
+		//This sample is similar to  AESTest
 		final String pldata = "This is just a plaintext message for Blowfish Test";
 		byte[] aesma128 = new byte[]{0x00,0x01,0x02,0x03,
 				0x00,0x01,0x02,0x03,
 				0x00,0x01,0x02,0x03,
 				0x00,0x01,0x02,0x03};
-		
+		//Blowfish IV in CBC is 8 bytes instead of 16 bytes for AES
 		byte[] bytesIV = new byte[] {0x00,0x01,0x02,0x03,
 				0x00,0x01,0x02,0x03};
 		
@@ -39,11 +37,11 @@ public class BFTest {
 		SecretKey blowfishkey = new SecretKeySpec(aesma128, "Blowfish");
 		IvParameterSpec iv = new IvParameterSpec(bytesIV);
 				
-		//Key AESKEY128 = new SecretKeySpec(aesma128,"AES");
+		//encryption
 		Cipher aescipher = Cipher.getInstance("Blowfish/CBC/PKCS5PADDING");
 		aescipher.init(Cipher.ENCRYPT_MODE, blowfishkey,iv);
 		byte[] endata = aescipher.doFinal(pldata.getBytes());
-		System.out.print("-----------encryption-----------");
+		System.out.println("-----------encryption-----------");
 		String hexStr = "";
 				for(int i =0; i<endata.length;i++)
 				{
@@ -51,6 +49,7 @@ public class BFTest {
 				}
 		System.out.println(hexStr);
 		
+		//decryption
 		aescipher.init(Cipher.DECRYPT_MODE, blowfishkey,iv);
 		byte[] dedata = aescipher.doFinal(endata);
 		String ds = new String(dedata);
