@@ -50,7 +50,7 @@ public class AESTest {
 		aescipher.init(Cipher.ENCRYPT_MODE, AESKEY128,iv);
 		//Print cipher text 
 		byte[] endata = aescipher.doFinal(pldata.getBytes());
-		System.out.print("-----------encryption-----------");
+		System.out.println("-----------encryption-----------");
 		String hexStr = "";
 			for(int i =0; i<endata.length;i++)
 				{
