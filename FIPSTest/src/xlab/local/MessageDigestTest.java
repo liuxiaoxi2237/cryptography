@@ -1,4 +1,4 @@
-package vxrail.local;
+package xlab.local;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

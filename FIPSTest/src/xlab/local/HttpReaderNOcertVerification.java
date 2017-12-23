@@ -1,4 +1,7 @@
-package vxrail.local;
+/*
+ * This app is to demonstrate client side https access without certificate verification
+ */
+package xlab.local;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -32,63 +35,53 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-
-
 public class HttpReaderNOcertVerification {
-	
-	
-	
-
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException, KeyManagementException, NoSuchProviderException {
-		// TODO Auto-generated method stub
-	
 
-/*	
+	//Initialize sslContext
 	SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-	System.out.println("JSSE Provider is: " + sslContext.getProvider().getName());
-	
-	//sslContext.init(null, tmf.getTrustManagers(), null);
+
+	//With customized TrustManager
 	sslContext.init(null,new TrustManager[] { new TrustAllX509TrustManager() },null);
-
-	
-    SSLSocketFactory sf = sslContext.getSocketFactory();
-
-        
-    // Create the connection.
-
-    HttpsURLConnection.setDefaultSSLSocketFactory(sf);
+	SSLSocketFactory sf = sslContext.getSocketFactory();
     
-*/
-		
-/*    
+    //No certificate verification
+    HttpsURLConnection.setDefaultSSLSocketFactory(sf);
+    //No hostname verification during SSL handshake. SAN
     HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier()
     {      	
 
 		@Override
 		public boolean verify(String hostname, SSLSession session) 
 		{
-			// TODO Auto-generated method stub
+			//Do nothing, no hostname verification
 			return true;
 		}
 
         });
- */
+ 	
+    //List cipherSuite supported in this environment, just a demo
+	String[] cipherSuite = HttpsURLConnection.getDefaultSSLSocketFactory().getSupportedCipherSuites();	
+	System.out.println("Support CipherSuite as below: ");
+	for(int i=0; i < cipherSuite.length; i++)
+	{
+		System.out.println(cipherSuite[i]);
+	}
+			
+	//List Hostnameverifier, just a demo
+	System.out.println(HttpsURLConnection.getDefaultHostnameVerifier().getClass().getName());
+	
+
+	//By default, https conntions will use java default trust sotre to verify server certificate
+	//This mean, if access web site with valid cert. No need above HttpsURLConnection configuration
+	//You'd better test it with a website with self-sign(or untrust) cert !!!
     String connectionURL = "https://www.rsa.com";
     URL myURL = new URL(connectionURL);
-    //URLConnection myConnection = myURL.openConnection();
-    HttpURLConnection myConnection = 
-    		(HttpURLConnection) myURL.openConnection();
+    HttpsURLConnection myConnection = 
+    		(HttpsURLConnection) myURL.openConnection();
     
-
-   /* 
-    if (myConnection instanceof HttpsURLConnection) {
-        ((HttpsURLConnection) myConnection).setSSLSocketFactory(sf);
-        //disable certificate verification
- 
-    }
-    */
-    
+   
     // Get the data from the server, and print it out.
     InputStream input = myConnection.getInputStream();
     String result = getStringFromInputStream(input);

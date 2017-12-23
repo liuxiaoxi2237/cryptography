@@ -1,4 +1,4 @@
-package vxrail.local;
+package xlab.local;
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.X509Certificate;
 

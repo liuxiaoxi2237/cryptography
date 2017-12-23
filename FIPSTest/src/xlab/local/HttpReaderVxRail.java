@@ -1,4 +1,4 @@
-package vxrail.local;
+package xlab.local;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -27,44 +27,30 @@ import javax.net.ssl.TrustManagerFactory;
 
 
 
-public class HttpReaderNonFIPS {
+public class HttpReaderVxRail {
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException, KeyManagementException, NoSuchProviderException {
 		// TODO Auto-generated method stub
-		//this is for no-fips operation
+		//this is for no-fips operation, create keystore
 		KeyStore pk12store = KeyStore.getInstance("PKCS12");
 		
 		System.out.println("keystore type is: " + pk12store.getType());
-		//pk12store.load(null, "password".toCharArray());
+		//pk12store.load(null, null);
 		
 		
-		
+		//print keystore content
 		System.out.println("Keystore provider: " + pk12store.getProvider().getName());
-		//read keystore from file
-		FileInputStream fis = new FileInputStream("c:\\temp\\rsa01.p12");
-		pk12store.load(fis,"password".toCharArray());
-		
-		
-		//import certificate into keystore 
-		
-		InputStream certis = new FileInputStream("c:\\temp\\cert02.cer");
-		BufferedInputStream bis = new BufferedInputStream(certis);
-
-		CertificateFactory cf = CertificateFactory.getInstance("X.509");
-		
-		
-		while (bis.available() > 0) {
-		    Certificate cert = cf.generateCertificate(bis);
-		    pk12store.setCertificateEntry("emcroot"+bis.available(), cert);
-		}
-
+		//load keystore from file
+		FileInputStream fis = new FileInputStream("c:\\temp\\server.pfx");
+		pk12store.load(fis,"testpassword".toCharArray());
 		
 		//read keystore content 
 		Enumeration<String> alias = pk12store.aliases();
-	  while(alias.hasMoreElements()){
+		while(alias.hasMoreElements()){
 	            String certname = alias.nextElement();
 	            System.out.println("Alias name: " + certname);
 	        }
+		
 		
 
 	TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
@@ -74,18 +60,17 @@ public class HttpReaderNonFIPS {
 	System.out.println("JSSE Provider is: " + sslContext.getProvider().getName());
 	
 	sslContext.init(null, tmf.getTrustManagers(), null);
-	
-    SSLSocketFactory sf = sslContext.getSocketFactory();
+	SSLSocketFactory sf = sslContext.getSocketFactory();
+    
+    //set https porperty
+    HttpsURLConnection.setDefaultSSLSocketFactory(sf);
 
     // Create the connection.
-    String connectionURL = "https://www.rsa.com";
+    String connectionURL = "https://05aa-app02-vxm.vxrail.vce.com";
     URL myURL = new URL(connectionURL);
-    URLConnection myConnection = myURL.openConnection();
+    HttpsURLConnection myConnection = (HttpsURLConnection) myURL.openConnection();
     
-    if (myConnection instanceof HttpsURLConnection) {
-        ((HttpsURLConnection) myConnection).setSSLSocketFactory(sf);
-    }
-
+  
     // Get the data from the server, and print it out.
     InputStream input = myConnection.getInputStream();
     String result = getStringFromInputStream(input);
@@ -94,6 +79,7 @@ public class HttpReaderNonFIPS {
 
 	
 	}
+	
 private static String getStringFromInputStream(InputStream is) {
 
 	BufferedReader br = null;
@@ -122,5 +108,6 @@ private static String getStringFromInputStream(InputStream is) {
 	return sb.toString();
 
 }
+
 }
     
